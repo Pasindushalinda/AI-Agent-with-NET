@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Anthropic.SDK;
 using GeminiDotnet;
 using ConsoleAgent.Services;
+using Azure.AI.OpenAI;
+using Azure;
 
 namespace ConsoleAgent;
 
@@ -16,7 +18,10 @@ public static class Startup
         var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
         var geminiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")!;
         var claudeKey = Environment.GetEnvironmentVariable("CLAUDE_API_KEY")!;
-
+        
+        var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
+        var azureApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
+        var azureDeployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
 
         builder.Services.AddLogging(logging => logging.AddConsole().SetMinimumLevel(LogLevel.Information));
         builder.Services.AddSingleton<ILoggerFactory>(sp =>
@@ -30,6 +35,12 @@ public static class Startup
                 "openai" => new OpenAI.Chat.ChatClient(
                                 string.IsNullOrWhiteSpace(model) ? "gpt-4.1-mini" : model,
                                 openAiKey).AsIChatClient(),
+
+                "azure" or "azureopenai" => new AzureOpenAIClient(
+                                new Uri(azureEndpoint),
+                                new AzureKeyCredential(azureApiKey))
+                                .GetChatClient(string.IsNullOrWhiteSpace(model) ? azureDeployment : model)
+                                .AsIChatClient(),
 
                 "gemini" => new GeminiChatClient(new GeminiDotnet.GeminiClientOptions { ApiKey = geminiKey, ModelId = model, ApiVersion = GeminiApiVersions.V1Beta }),
 
@@ -52,9 +63,8 @@ public static class Startup
             Tools = [.. FunctionRegistry.GetTools(sp)],
             ModelId = model,
             Temperature = 1,
-            MaxOutputTokens = 5000 // needed for claude
+            MaxOutputTokens = 5000
         });
-
 
         builder.Services.AddSingleton<IWeatherService>(_ =>
         {
@@ -63,6 +73,5 @@ public static class Startup
         });
         builder.Services.AddSingleton<WardrobeService>();
         builder.Services.AddSingleton<EmailService>();
-
     }
 }

@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/pasindurathnayake/Desktop/pasindu/learn/Dometrain - Getting Started AI Agents in C# 2025-8/getting-started-ai-agents-in-csharp/ConsoleAgent/ConsoleAgent.csproj": {}
+  },
+  "projects": {
+    "/Users/pasindurathnayake/Desktop/pasindu/learn/Dometrain - Getting Started AI Agents in C# 2025-8/getting-started-ai-agents-in-csharp/ConsoleAgent/ConsoleAgent.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/pasindurathnayake/Desktop/pasindu/learn/Dometrain - Getting Started AI Agents in C# 2025-8/getting-started-ai-agents-in-csharp/ConsoleAgent/ConsoleAgent.csproj",
+        "projectName": "ConsoleAgent",
+        "projectPath": "/Users/pasindurathnayake/Desktop/pasindu/learn/Dometrain - Getting Started AI Agents in C# 2025-8/getting-started-ai-agents-in-csharp/ConsoleAgent/ConsoleAgent.csproj",
+        "packagesPath": "/Users/pasindurathnayake/.nuget/packages/",
+        "outputPath": "/Users/pasindurathnayake/Desktop/pasindu/learn/Dometrain - Getting Started AI Agents in C# 2025-8/getting-started-ai-agents-in-csharp/ConsoleAgent/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/pasindurathnayake/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Anthropic.SDK": {
+              "target": "Package",
+              "version": "[5.4.3, )"
+            },
+            "Azure.AI.OpenAI": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "GeminiDotnet.Extensions.AI": {
+              "target": "Package",
+              "version": "[0.14.1, )"
+            },
+            "Microsoft.Extensions.AI": {
+              "target": "Package",
+              "version": "[9.7.1, )"
+            },
+            "Microsoft.Extensions.AI.OpenAI": {
+              "target": "Package",
+              "version": "[9.7.1-preview.1.25365.4, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.7, )"
+            },
+            "dotenv.net": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.302/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
