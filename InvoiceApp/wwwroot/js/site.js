@@ -1,18 +1,8 @@
 // Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Wait for Alpine.js to be available
-document.addEventListener('DOMContentLoaded', function () {
-    // Make sure Alpine is loaded
-    if (typeof Alpine !== 'undefined') {
-        initializeAlpine();
-    } else {
-        // If Alpine isn't loaded yet, wait for it
-        document.addEventListener('alpine:init', initializeAlpine);
-    }
-});
-
-function initializeAlpine() {
+// Initialize Alpine.js data before Alpine starts
+document.addEventListener('alpine:init', () => {
     Alpine.data('chatbot', () => ({
         chatOpen: false,
         messages: [],
@@ -61,7 +51,7 @@ function initializeAlpine() {
 
             try {
                 // Send the entire messages array to the API
-                const response = await fetch('http://localhost:5001/chat', {
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -94,4 +84,4 @@ function initializeAlpine() {
             }
         }
     }));
-}
+});
