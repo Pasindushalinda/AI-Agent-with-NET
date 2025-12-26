@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Anthropic.SDK;
 using GeminiDotnet;
 using InvoiceAgentApi.Services;
+using Azure.AI.OpenAI;
+using Azure;
 
 namespace InvoiceAgentApi;
 
@@ -16,6 +18,11 @@ public static class Startup
         var openAiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
         var geminiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")!;
         var claudeKey = Environment.GetEnvironmentVariable("CLAUDE_API_KEY")!;
+
+        var azureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
+        var azureApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
+        var azureDeployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
+
 
         builder.Services.AddLogging(logging => logging.AddConsole().SetMinimumLevel(LogLevel.Information));
         builder.Services.AddSingleton<ILoggerFactory>(sp =>
@@ -33,6 +40,13 @@ public static class Startup
                 "gemini" => new GeminiChatClient(new GeminiDotnet.GeminiClientOptions { ApiKey = geminiKey, ModelId = model, ApiVersion = GeminiApiVersions.V1Beta }),
 
                 "claude" => new AnthropicClient(new APIAuthentication(claudeKey)).Messages,
+
+                "azure" or "azureopenai" => new AzureOpenAIClient(
+                                new Uri(azureEndpoint),
+                                new AzureKeyCredential(azureApiKey))
+                                .GetChatClient(string.IsNullOrWhiteSpace(model) ? azureDeployment : model)
+                                .AsIChatClient(),
+
 
                 _ => throw new ArgumentException($"Unknown provider: {provider}")
             };

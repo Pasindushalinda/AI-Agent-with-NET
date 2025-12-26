@@ -51,7 +51,7 @@ document.addEventListener('alpine:init', () => {
 
             try {
                 // Send the entire messages array to the API
-                const response = await fetch('/api/chat', {
+                const response = await fetch('http://localhost:5001/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

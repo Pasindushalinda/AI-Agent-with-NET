@@ -35,8 +35,8 @@ builder.WebHost.ConfigureKestrel(options =>
 
 DotEnv.Load();
 
-string provider = "openai";
-string model = "gpt-4.1-mini";
+string provider = "azure";
+string model = "gpt-4.1-nano";
 for (int i = 0; i < args.Length; i++)
 {
     if (args[i] == "--provider" && i + 1 < args.Length)

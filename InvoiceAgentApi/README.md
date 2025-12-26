@@ -24,6 +24,8 @@ dotnet restore
 
 # Run with CLI arguments to choose a provider and model, for example....
 
+dotnet run  --provider azure --model gpt-5-mini
+
 dotnet run  --provider openai --model gpt-5-mini
 
 dotnet run  --provider gemini --model gemini-2.0-flash-lite
