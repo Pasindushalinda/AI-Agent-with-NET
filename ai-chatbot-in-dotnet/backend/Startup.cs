@@ -52,7 +52,10 @@ static class Startup
             }
         });
 
-        builder.Services.AddSingleton<IndexClient>(s => new PineconeClient(pineconeKey).Index("landmark-chunks"));
+        builder.Services.AddSingleton<IndexClient>(s => new PineconeClient(pineconeKey).Index(
+            "wekipedia-landmarks",
+            "https://wekipedia-landmarks-jbshle9.svc.aped-4627-b74a.pinecone.io"
+        ));
 
         builder.Services.AddSingleton<DocumentChunkStore>(s => new DocumentChunkStore());
 
