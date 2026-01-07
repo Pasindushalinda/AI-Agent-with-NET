@@ -113,5 +113,6 @@ static class Startup
         builder.Services.AddSingleton<RagQuestionService>();
         builder.Services.AddSingleton<ArticleSplitter>();
         builder.Services.AddSingleton<PromptService>();
+        builder.Services.AddSingleton<DocumentStore>();
     }
 }
