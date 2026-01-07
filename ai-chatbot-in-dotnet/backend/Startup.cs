@@ -12,7 +12,6 @@ static class Startup
 {
     public static void ConfigureServices(WebApplicationBuilder builder)
     {
-        var openAiKey = builder.RequireEnv("OPENAI_API_KEY");
         var pineconeKey = builder.RequireEnv("PINECONE_API_KEY");
 
         builder.Services.AddCors(options =>
@@ -25,10 +24,33 @@ static class Startup
             );
         });
 
-        builder.Services.AddSingleton<StringEmbeddingGenerator>(s => new OpenAI.Embeddings.EmbeddingClient(
-                model: "text-embedding-3-small",
-                apiKey: openAiKey
-            ).AsIEmbeddingGenerator());
+        // Configure embedding generator (supports both OpenAI and Azure OpenAI)
+        builder.Services.AddSingleton<StringEmbeddingGenerator>(s =>
+        {
+            var useAzure = builder.Configuration.GetValue<bool>("UseAzureOpenAI");
+
+            if (useAzure)
+            {
+                var azureEndpoint = builder.RequireEnv("AZURE_OPENAI_ENDPOINT");
+                var azureApiKey = builder.RequireEnv("AZURE_OPENAI_API_KEY");
+                var embeddingDeployment = builder.RequireEnv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT");
+
+                var azureClient = new Azure.AI.OpenAI.AzureOpenAIClient(
+                    new Uri(azureEndpoint),
+                    new Azure.AzureKeyCredential(azureApiKey)
+                );
+
+                return azureClient.GetEmbeddingClient(embeddingDeployment).AsIEmbeddingGenerator();
+            }
+            else
+            {
+                var openAiKey = builder.RequireEnv("OPENAI_API_KEY");
+                return new OpenAI.Embeddings.EmbeddingClient(
+                    model: "text-embedding-3-small",
+                    apiKey: openAiKey
+                ).AsIEmbeddingGenerator();
+            }
+        });
 
         builder.Services.AddSingleton<IndexClient>(s => new PineconeClient(pineconeKey).Index("landmark-chunks"));
 
@@ -44,9 +66,30 @@ static class Startup
         builder.Services.AddSingleton<IChatClient>(sp =>
          {
              var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-             var client = new OpenAI.Chat.ChatClient(
-                  "gpt-5-mini",
-                  openAiKey).AsIChatClient();
+             var useAzure = builder.Configuration.GetValue<bool>("UseAzureOpenAI");
+
+             IChatClient client;
+
+             if (useAzure)
+             {
+                 var azureEndpoint = builder.RequireEnv("AZURE_OPENAI_ENDPOINT");
+                 var azureApiKey = builder.RequireEnv("AZURE_OPENAI_API_KEY");
+                 var chatDeployment = builder.RequireEnv("AZURE_OPENAI_CHAT_DEPLOYMENT");
+
+                 var azureClient = new Azure.AI.OpenAI.AzureOpenAIClient(
+                     new Uri(azureEndpoint),
+                     new Azure.AzureKeyCredential(azureApiKey)
+                 );
+
+                 client = azureClient.GetChatClient(chatDeployment).AsIChatClient();
+             }
+             else
+             {
+                 var openAiKey = builder.RequireEnv("OPENAI_API_KEY");
+                 client = new OpenAI.Chat.ChatClient(
+                      "gpt-5-mini",
+                      openAiKey).AsIChatClient();
+             }
 
              return new ChatClientBuilder(client)
                  .UseLogging(loggerFactory)

@@ -49,10 +49,10 @@ public class IndexBuilder(
                 Vectors = vectors
             });
 
-            foreach (var chunk in chunks)
-            {
-                chunkStore.SaveDocumentChunk(chunk);
-            }
+            // foreach (var chunk in chunks)
+            // {
+            //     chunkStore.SaveDocumentChunk(chunk);
+            // }
 
             // If you have rate limit issues with Pinecone (may happen based on your plan) then uncomment this Task.Delay()
             // see https://docs.pinecone.io/reference/api/database-limits#rate-limits
