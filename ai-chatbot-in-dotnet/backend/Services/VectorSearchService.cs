@@ -4,10 +4,9 @@ namespace ChatBot.Services;
 
 public class VectorSearchService(StringEmbeddingGenerator embeddingGenerator,
                            Pinecone.IndexClient pineconeIndex,
-                           DocumentChunkStore contentStore,
-                           DocumentStore documentStore)
+                           DocumentChunkStore contentStore)
 {
-    public async Task<List<Document>> FindTopKChunks(string query, int k)
+    public async Task<List<DocumentChunk>> FindTopKChunks(string query, int k)
     {
         if (string.IsNullOrWhiteSpace(query))
             return [];
@@ -32,8 +31,7 @@ public class VectorSearchService(StringEmbeddingGenerator embeddingGenerator,
             return [];
 
         var ids = matches.Select(m => m.Id!).Where(id => !string.IsNullOrEmpty(id));
-        // var articles = contentStore.GetDocumentChunks(ids);
-        var articles = documentStore.GetDocuments(ids);
+        var articles = contentStore.GetDocumentChunks(ids);
 
         var scoreById = matches.Where(m => m.Id is not null)
                                .ToDictionary(m => m.Id!, m => m.Score);
@@ -45,5 +43,5 @@ public class VectorSearchService(StringEmbeddingGenerator embeddingGenerator,
         return ordered;
     }
 
-    public Task<List<Document>> FindInDatabase(string query) => FindTopKChunks(query, 5);
+    public Task<List<DocumentChunk>> FindInDatabase(string query) => FindTopKChunks(query, 5);
 }

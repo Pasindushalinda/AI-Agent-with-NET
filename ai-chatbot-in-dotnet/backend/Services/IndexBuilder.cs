@@ -33,41 +33,27 @@ public class IndexBuilder(
                 new EmbeddingGenerationOptions { Dimensions = 512 }
             );
 
-            // var vectors = chunks.Select((chunk, index) => new Vector
-            // {
-            //     Id = chunk.Id,
-            //     Values = embeddings[index].Vector.ToArray(),
-            //     Metadata = new Metadata
-            //     {
-            //         { "title", chunk.Title },
-            //         { "section", chunk.Section },
-            //         { "chunk_index", chunk.ChunkIndex }
-            //     }
-            // });
-
-            var vectorArray=embeddings[0].Vector.ToArray();
-            var pineconeVector=new Vector
+            var vectors = chunks.Select((chunk, index) => new Vector
             {
-                Id=page.Id,
-                Values=vectorArray,
-                Metadata=new Metadata
+                Id = chunk.Id,
+                Values = embeddings[index].Vector.ToArray(),
+                Metadata = new Metadata
                 {
-                    {"title",title },
-                    {"source","wikipedia" }
+                    { "title", chunk.Title },
+                    { "section", chunk.Section },
+                    { "chunk_index", chunk.ChunkIndex }
                 }
-            };
+            });
 
             await pineconeIndex.UpsertAsync(new UpsertRequest
             {
-                Vectors = [pineconeVector]
+                Vectors = vectors
             });
 
-            documentStore.SaveDocument(page);
-
-            // foreach (var chunk in chunks)
-            // {
-                // chunkStore.SaveDocumentChunk(chunk);
-            // }
+            foreach (var chunk in chunks)
+            {
+                chunkStore.SaveDocumentChunk(chunk);
+            }
 
             // If you have rate limit issues with Pinecone (may happen based on your plan) then uncomment this Task.Delay()
             // see https://docs.pinecone.io/reference/api/database-limits#rate-limits
